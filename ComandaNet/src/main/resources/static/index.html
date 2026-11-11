@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b1020">
+    <title>ComandaNet | Gestão de Comandas</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+<section id="tela-login" class="login-screen">
+    <div class="login-card">
+        <div class="login-brand">CN<span>+</span></div>
+        <p class="eyebrow">SISTEMA DE RESTAURANTE</p>
+        <h1>Entrar no ComandaNet</h1>
+        <p class="login-description">Acesse sua conta para gerenciar produtos e emitir comandas.</p>
+        <form id="form-login">
+            <label for="login-usuario">Usuário</label>
+            <input id="login-usuario" name="username" autocomplete="username" required placeholder="Digite seu usuário">
+            <label for="login-senha">Senha</label>
+            <input id="login-senha" name="senha" type="password" autocomplete="current-password" required placeholder="Digite sua senha">
+            <p id="mensagem-login" class="login-message" role="alert"></p>
+            <button class="btn btn-primary login-submit" type="submit">Entrar no sistema</button>
+        </form>
+        <small class="login-hint">Contas iniciais: admin / Admin@12345 · usuario / Usuario@12345</small>
+    </div>
+</section>
+<div class="app" id="aplicacao" hidden>
+
+    <!-- MENU LATERAL -->
+    <aside class="sidebar" id="sidebar">
+        <a href="#inicio" class="brand" data-page="inicio">
+            <span class="brand-logo">CN<span>+</span></span>
+            <span class="brand-copy">
+                <strong>ComandaNet</strong>
+                <small>GESTÃO DE COMANDAS</small>
+            </span>
+        </a>
+
+        <div class="sidebar-label">MENU PRINCIPAL</div>
+
+        <nav class="navigation" aria-label="Menu principal">
+            <button class="nav-link active" data-page="inicio" type="button">
+                <span class="nav-icon">▦</span> Dashboard
+            </button>
+
+            <button class="nav-link" data-page="produtos" type="button">
+                <span class="nav-icon">▣</span> Produtos
+            </button>
+
+            <button class="nav-link" data-page="comandas" type="button">
+                <span class="nav-icon">▤</span> Comandas
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="connection-status">
+                <span class="status-dot"></span>
+                <div>
+                    <strong>ComandaNet</strong>
+                    <small>Ambiente de demonstração</small>
+                </div>
+            </div>
+            <p class="sidebar-version">Versão 1.0 · Projeto acadêmico</p>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-button mobile-menu"
+                        id="mobile-menu"
+                        aria-label="Abrir menu"
+                        type="button">☰</button>
+
+                <div>
+                    <p class="eyebrow">PAINEL DE CONTROLE</p>
+                    <h1 id="page-title">Dashboard</h1>
+                    <p class="page-subtitle" id="page-subtitle">
+                        Acompanhe os dados do seu sistema.
+                    </p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="user-avatar" id="avatar-usuario">U</div>
+                <div class="user-info">
+                    <strong id="nome-usuario">Usuário</strong>
+                    <span id="perfil-usuario">Acesso autenticado</span>
+                </div>
+                <button class="btn btn-secondary btn-logout" id="btn-logout" type="button">Sair</button>
+            </div>
+        </header>
+
+        <div class="page-container">
+
+            <!-- DASHBOARD -->
+            <section class="page" id="inicio">
+
+                <div class="hero-card">
+                    <div class="hero-content">
+                        <span class="hero-tag">✦ CENTRAL DE GESTÃO</span>
+
+                        <h2>Controle de comandas,<br>
+                            <span>de um jeito simples.</span>
+                        </h2>
+
+                        <p>
+                            Gerencie seus produtos, controle o estoque e
+                            acompanhe suas comandas em um só lugar.
+                        </p>
+
+                        <button class="btn btn-light"
+                                data-page="comandas"
+                                type="button">
+                            Acessar comandas <span>→</span>
+                        </button>
+                    </div>
+
+                    <div class="hero-art" aria-hidden="true">
+                        <div class="hero-orbit orbit-one"></div>
+                        <div class="hero-orbit orbit-two"></div>
+
+                        <div class="hero-document">
+                            <span class="document-symbol">CN</span>
+                            <span class="document-line line-long"></span>
+                            <span class="document-line"></span>
+                            <span class="document-line line-short"></span>
+                            <span class="document-stamp">✓</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Visão geral</h2>
+                        <p>Resumo dos registros do sistema.</p>
+                    </div>
+
+                    <button class="btn btn-secondary"
+                            id="refresh-dashboard"
+                            type="button">
+                        ↻ Atualizar dados
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+
+                    <article class="stat-card">
+                        <div class="stat-top">
+                            <span class="stat-icon icon-blue">▣</span>
+                            <span class="stat-caption">CADASTRO</span>
+                        </div>
+                        <p>Total de produtos</p>
+                        <h3 id="total-produtos">—</h3>
+                        <span class="stat-foot">Produtos registrados</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-top">
+                            <span class="stat-icon icon-cyan">▤</span>
+                            <span class="stat-caption">FISCAL</span>
+                        </div>
+                        <p>Comandas</p>
+                        <h3 id="total-comandas">—</h3>
+                        <span class="stat-foot">Comandas registradas</span>
+                    </article>
+
+                </div>
+
+                <div class="section-heading quick-heading">
+                    <div>
+                        <h2>Acesso rápido</h2>
+                        <p>Escolha o que deseja fazer.</p>
+                    </div>
+                </div>
+
+                <div class="quick-grid">
+
+                    <button class="quick-card"
+                            data-page="produtos"
+                            type="button">
+                        <span class="quick-icon icon-blue">▣</span>
+                        <span class="quick-title">Produtos</span>
+                        <span class="quick-description">
+                            Cadastre e consulte produtos.
+                        </span>
+                        <span class="quick-arrow">→</span>
+                    </button>
+
+                    <button class="quick-card"
+                            data-page="comandas"
+                            type="button">
+                        <span class="quick-icon icon-cyan">▤</span>
+                        <span class="quick-title">Comandas</span>
+                        <span class="quick-description">
+                            Emita comandas com vários produtos.
+                        </span>
+                        <span class="quick-arrow">→</span>
+                    </button>
+
+                </div>
+            </section>
+
+            <!-- PRODUTOS -->
+            <section class="page" id="produtos" hidden>
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Gerenciar produtos</h2>
+                        <p>Cadastre produtos e controle o estoque.</p>
+                    </div>
+
+                    <span class="counter" id="contador-produtos">
+                        0 produtos
+                    </span>
+                </div>
+
+                <!-- FORMULÁRIO DE PRODUTO -->
+                <div class="content-card somente-adm">
+
+                    <div class="card-heading">
+                        <div class="card-heading-icon icon-blue">＋</div>
+                        <div>
+                            <h3>Novo produto</h3>
+                            <p>Preencha as informações para cadastrar.</p>
+                        </div>
+                    </div>
+
+                    <form id="form-produto">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="produto-nome">
+                                    Nome do produto *
+                                </label>
+                                <input id="produto-nome"
+                                       name="nome"
+                                       type="text"
+                                       placeholder="Ex.: Teclado gamer"
+                                       required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="produto-descricao">
+                                    Descrição
+                                </label>
+                                <input id="produto-descricao"
+                                       name="descricao"
+                                       type="text"
+                                       placeholder="Descrição do produto">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="produto-preco">
+                                    Preço (R$) *
+                                </label>
+                                <input id="produto-preco"
+                                       name="preco"
+                                       type="number"
+                                       min="0.01"
+                                       step="0.01"
+                                       placeholder="0,00"
+                                       required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="produto-estoque">
+                                    Estoque *
+                                </label>
+                                <input id="produto-estoque"
+                                       name="estoque"
+                                       type="number"
+                                       min="0"
+                                       step="1"
+                                       placeholder="0"
+                                       required>
+                            </div>
+
+                        </div>
+
+                        <div class="form-footer">
+                            <p class="form-message"
+                               id="mensagem-produto"
+                               role="status"></p>
+
+                            <button class="btn btn-primary" type="submit">
+                                <span>＋</span> Cadastrar produto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- TABELA DE PRODUTOS -->
+                <div class="content-card">
+
+                    <div class="section-heading table-heading">
+                        <div>
+                            <h3>Produtos cadastrados</h3>
+                            <p>Lista atualizada de produtos.</p>
+                        </div>
+
+                        <button class="btn btn-secondary"
+                                id="refresh-products"
+                                type="button">
+                            ↻ Atualizar
+                        </button>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Produto</th>
+                                <th>Preço</th>
+                                <th>Estoque</th>
+                                <th>Descrição</th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="tabela-produtos">
+                            <tr>
+                                <td colspan="5" class="empty-cell">
+                                    Carregando produtos...
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COMANDAS -->
+            <section class="page" id="comandas" hidden>
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Comandas</h2>
+                        <p>
+                            Emita e consulte as comandas do restaurante.
+                        </p>
+                    </div>
+
+                    <span class="counter" id="contador-comandas">
+                        0 comandas
+                    </span>
+                </div>
+
+                <!-- AVISO -->
+                <div class="notice">
+                    <span class="notice-icon">ⓘ</span>
+                    <p>
+                        Esta aplicação é um projeto acadêmico. As comandas emitidas
+                        aqui são registros de demonstração, não documentos fiscais
+                        autorizados pela SEFAZ.
+                    </p>
+                </div>
+
+                <!-- EMISSÃO DA NOTA -->
+                <div class="content-card">
+
+                    <div class="card-heading">
+                        <div class="card-heading-icon icon-cyan">＋</div>
+                        <div>
+                            <h3>Emitir nova comanda</h3>
+                            <p>
+                                Adicione um ou mais produtos à mesma comanda.
+                            </p>
+                        </div>
+                    </div>
+
+                    <form id="form-comanda">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="comanda-nome">Nome da comanda *</label>
+                                <input id="comanda-nome" name="nome" type="text"
+                                       maxlength="80" placeholder="Ex.: Mesa 04 ou João" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid invoice-form-grid">
+
+                            <div class="form-group">
+                                <label for="comanda-produto">Produto *</label>
+                                <select id="comanda-produto"
+                                        name="produtoId"
+                                        >
+                                    <option value="">
+                                        Selecione um produto
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="comanda-quantidade">
+                                    Quantidade *
+                                </label>
+                                <input id="comanda-quantidade"
+                                       name="quantidade"
+                                       type="number"
+                                       min="1"
+                                       step="1"
+                                       value="1"
+                                       required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button class="btn btn-secondary"
+                                        id="adicionar-item"
+                                        type="button">
+                                    ＋ Adicionar produto
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <!-- ITENS DA NOTA -->
+                        <div class="section-heading table-heading">
+                            <div>
+                                <h3>Itens da comanda</h3>
+                                <p>
+                                    Confira os produtos e as quantidades antes de emitir.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                    <th>Preço unitário</th>
+                                    <th>Subtotal</th>
+                                    <th>Ação</th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="itens-comanda">
+                                <tr>
+                                    <td colspan="5" class="empty-cell">
+                                        Nenhum produto adicionado.
+                                    </td>
+                                </tr>
+                                </tbody>
+
+                                <tfoot>
+                                <tr>
+                                    <th colspan="3">Total da comanda</th>
+                                    <th id="total-previsto">R$ 0,00</th>
+                                    <th></th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- BOTÃO DE EMISSÃO -->
+                        <div class="form-footer">
+                            <p class="form-message"
+                               id="mensagem-comanda"
+                               role="status"></p>
+
+                            <button class="btn btn-primary" type="submit">
+                                ✦ Emitir comanda
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- LISTA DE NOTAS -->
+                <div class="content-card">
+
+                    <div class="section-heading table-heading">
+                        <div>
+                            <h3>Comandas registradas</h3>
+                            <p>Consulte os registros de comandas.</p>
+                        </div>
+
+                        <button class="btn btn-secondary"
+                                id="refresh-comandas"
+                                type="button">
+                            ↻ Atualizar
+                        </button>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Nome</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                                <th>Itens</th>
+                                <th>Valor total</th>
+                                <th>Ações</th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="tabela-comandas">
+                            <tr>
+                                <td colspan="7" class="empty-cell">
+                                    Carregando comandas...
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- DETALHES DA NOTA -->
+                <div class="content-card details-card"
+                     id="detalhes-comanda"
+                     hidden>
+
+                    <div class="section-heading">
+                        <div>
+                            <h3 id="detalhes-titulo">Detalhes da comanda</h3>
+                            <p>Informações do registro selecionado.</p>
+                        </div>
+
+                        <button class="btn btn-secondary"
+                                id="close-details"
+                                type="button">
+                            Fechar ×
+                        </button>
+                    </div>
+
+                    <div id="detalhes-conteudo"></div>
+                </div>
+
+            </section>
+
+            <!-- RODAPÉ -->
+            <footer class="main-footer">
+                <span>ComandaNet © 2026</span>
+                <span>Projeto acadêmico · Gestão de comandas para restaurantes</span>
+            </footer>
+
+        </div>
+    </main>
+</div>
+
+<!-- NOTIFICAÇÕES -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>
